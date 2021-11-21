@@ -33,6 +33,7 @@ CONFIG EXAMPLE
 do_now_playing = true
 debug          = false
 debuglogfile   = /path/to/logfile
+notifications  = true
 
 [last.fm]
 username      = your last.fm username

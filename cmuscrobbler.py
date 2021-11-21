@@ -28,7 +28,6 @@ from urllib.parse import quote, unquote
 import mutagen
 from mutagen.id3 import ID3
 import configparser
-from plyer import notification
 from hashlib import md5
 import requests
 
@@ -64,6 +63,9 @@ do_now_playing = True
 # >>> md5('password'.encode('ascii')).hexdigest()
 # '5f4dcc3b5aa765d61d8327deb882cf99'
 # for listenbrainz.org use user token instead of password
+
+# set this to False if you don't like to use desktop notifications
+notifications = True
 
 debug = False
 debuglogfile = '/path/to/logfile'
@@ -407,7 +409,8 @@ class CmuScrobbler:
                 'trackno': self.data['tracknumber'],
                 'file': self.data['file'],
             }
-            self.show_notification(now_playing)
+            if notifications:
+                self.show_notification(now_playing)
         else:
             if os.path.exists(self.status):
                 os.remove(self.status)
@@ -416,6 +419,7 @@ class CmuScrobbler:
         logger.debug('Main Process finished.')
 
     def show_notification(self, now_playing):
+        from plyer import notification
         media_file = now_playing['file']
         if now_playing['file'][0:6] == 'cue://':
             media_file = media_file[6:self.cue_trim.search(media_file).start()]
@@ -757,6 +761,8 @@ def read_config():
         debug = cp.getboolean('DEFAULT', 'debug')
     if 'debuglogfile' in cp.defaults():
         debuglogfile = cp.get('DEFAULT', 'debuglogfile')
+    if 'notifications' in cp.defaults():
+        notifications = cp.getboolean('DEFAULT', 'notifications')
 
 def usage():
     print("To use cmuscrobbler.py:")
