@@ -13,21 +13,12 @@ EXAMPLE below).
 You can now do multiscrobble. Just add multiple entries to the config. See the
 source for an example.
 
-Make sure you have python-scrobbler installed. You can install it with
-easy_installer by entering `sudo easy_install scrobbler`.
-
-
-ATTENTION! CmuScrobbler now needs a patched version of scrobbler (until my
-patches get accepted upstream). Please install python-scrobbler with
-`sudo easy_install https://noahduffy.me/files/scrobbler-1.0.0a2_patch-py2.7.egg`
-
-If you want to bake your own scrobbler package you can find the patch here:
-https://sourceforge.net/p/scrobbler/patches/1/
-
+Make sure you have requests and plyer installed. You can install it from
+PyPI by entering `pip install requests` and `pip install plyer`.
 
 CmuScrobbler also depends on mutagen to read the MusicBrainz TrackID from the
-ID3-tags. You can install it also with easy_install, type:
-`sudo easy_install mutagen`
+ID3-tags. You can install it also from PyPI, type:
+`pip install mutagen`
 
 Afer you have done all this you can set cmus to use cmuscrobbler.py by entering
 `:set status_display_program=/home/user/.cmus/cmuscrobbler.py`
@@ -46,13 +37,20 @@ debuglogfile   = /path/to/logfile
 [last.fm]
 username      = your last.fm username
 password      = 5f4dcc3b5aa765d61d8327deb882cf99
-cachefile     = /path/to/last.fm/cachefile
+cachefile     = /path/to/last.fm.cachefile
 scrobbler_url = http://post.audioscrobbler.com/
-pidfile       = /path/to/last.fm/pidfile
+pidfile       = /path/to/last.fm.pidfile
 
 #[libre.fm]
 #username      = your libre.fm username
 #password      = 5f4dcc3b5aa765d61d8327deb882cf99
-#cachefile     = /path/to/libre.fm/cachefile
+#cachefile     = /path/to/libre.fm.cachefile
 #scrobbler_url = http://turtle.libre.fm/
-#pidfile       = /path/to/libre.fm./pidfile
+#pidfile       = /path/to/libre.fm.pidfile
+
+#[listenbrainz.org]
+#username      = your listenbrainz.org username
+#password      = 5f4dcc3b5aa765d61d8327deb882cf99
+#cachefile     = /path/to/listenbrainz.org.cachefile
+#scrobbler_url = http://proxy.listenbrainz.org/
+#pidfile       = /path/to/listenbrainz.org.pidfile
