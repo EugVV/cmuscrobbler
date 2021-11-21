@@ -420,21 +420,23 @@ class CmuScrobbler:
 
     def show_notification(self, now_playing):
         from plyer import notification
+        import itertools
         media_file = now_playing['file']
         if now_playing['file'][0:6] == 'cue://':
             media_file = media_file[6:self.cue_trim.search(media_file).start()]
+        notify_arg = {}
+        notify_arg['title'] = now_playing['artist']
+        notify_arg['message'] = now_playing['album'] + ' / ' + now_playing['title']
+        notify_arg['timeout'] = 2
+        notify_arg['app_name'] = 'CMuScrobbler'
+        fnames = ['cover', 'folder', 'front']
+        fexts = ['.jpg', '.jpeg', '.png']
+        for (fname, fext) in itertools.product(fnames, fexts):
+            if os.path.exists(os.path.dirname(media_file) + '/' + fname + fext):
+                notify_arg['app_icon'] = os.path.dirname(media_file) + '/' + fname + fext
+                break
         try:
-            if os.path.exists(os.path.dirname(media_file) + '/cover.jpg'):
-                notification.notify(title = now_playing['artist'],
-                                    message = now_playing['album'] + ' - ' + now_playing['title'],
-                                    timeout = 2,
-                                    app_name = 'CMuScrobbler',
-                                    app_icon = os.path.dirname(media_file) + '/cover.jpg')
-            else:
-                notification.notify(title = now_playing['artist'],
-                                    message = now_playing['album'] + ' - ' + now_playing['title'],
-                                    timeout = 2,
-                                    app_name = 'CMuScrobbler')
+            notification.notify(**notify_arg)
         except Exception as e:
             logger.debug('Notification show error: %s', e)
 
