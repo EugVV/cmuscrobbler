@@ -750,7 +750,7 @@ def exception_hook(*exc_info):
         logger.debug('%s', tbline)
 
 def read_config():
-    global do_now_playing, debug, debuglogfile
+    global do_now_playing, debug, debuglogfile, notifications
     cp = configparser.ConfigParser({'home': os.getenv('HOME')})
     cp.read(os.path.expanduser('~/.cmuscrobbler.conf'))
     if cp.sections():
