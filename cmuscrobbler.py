@@ -154,7 +154,7 @@ class Scrobbler:
         self.__LOGIN['a'] = token
         try:
             response = requests.get(url, params = self.__LOGIN)
-        except Exception as e:
+        except Exception:
             self.handle_hard_error()
             raise Exception('Error opening url %s' % url)
         if response:
@@ -442,22 +442,15 @@ class CmuScrobbler:
 
     def read_arguments(self):
         for k, v in zip(sys.argv[1::2], sys.argv[2::2]):
-            try:
-                self.data[k] = v
-            except UnicodeDecodeError:
-                # if utf-8 fails try with latin1.
-                # FIXME: consider making this configurable
-                self.data[k] = v
+            self.data[k] = v
         # self.data will be a hash like this:
-        """
-        {'album': u'Basics',
-         'artist': u'Funny van Dannen',
-         'duration': u'147',
-         'file': u'/home/david/m/m/+DB/Funny_van_Dannen/Basics/01-Guten_Abend.mp3',
-         'status': u'stopped',
-         'title': u'Guten Abend',
-         'tracknumber': u'1'}
-        """
+        # {'album': 'Basics',
+        #  'artist': 'Funny van Dannen',
+        #  'duration': '147',
+        #  'file': '/home/david/m/m/+DB/Funny_van_Dannen/Basics/01-Guten_Abend.mp3',
+        #  'status': 'stopped',
+        #  'title': 'Guten Abend',
+        #  'tracknumber': '1'}
         for field in ['artist', 'title', 'album', 'tracknumber', 'status', 'file']:
             if not field in self.data:
                 self.data[field] = ''
@@ -582,7 +575,6 @@ class CmuScrobbler:
             logger.debug('Now playing disabled')
             now_playing = None
         success = False
-        submitted = False
         tosubmit = set()
         tosubmitted = set()
         cache_count = 0
