@@ -107,11 +107,11 @@ class Scrobbler:
             response = requests.post(url, data = vdata, headers = hdrs)
             rsp = response.text.upper().strip()
         except Exception as e:
-            raise BackendError(str(e))
+            raise self.BackendError(str(e))
         if rsp == 'BADSESSION':
-            raise SessionError
+            raise self.SessionError
         elif rsp.startswith('FAILED'):
-            raise PostError(rsp.split(' ', 1)[1].strip() + (' POST = [%r]' % response.url))
+            raise self.PostError(rsp.split(' ', 1)[1].strip() + (' POST = [%r]' % response.url))
 
     def login(self, user, password, hashpw=False, client=('tst', '1.0'), url='http://post.audioscrobbler.com/'):
         """Authencitate with AS (The Handshake)
@@ -137,7 +137,7 @@ class Scrobbler:
             next_allowed_hs = self.LAST_HS + timedelta(seconds=self.HS_DELAY)
             if datetime.now() < next_allowed_hs:
                 delta = next_allowed_hs - datetime.now()
-                raise ProtocolError("""Please wait another %d seconds until next handshake
+                raise self.ProtocolError("""Please wait another %d seconds until next handshake
 (login) attempt.""" % delta.seconds)
 
         self.LAST_HS = datetime.now()
@@ -161,7 +161,7 @@ class Scrobbler:
             lines = response.text.split('\n')
             first = lines[0].strip().upper()
             if first == 'BADAUTH':
-                raise AuthError('Bad username/password')
+                raise self.AuthError('Bad username/password')
             elif first == 'BANNED':
                 raise Exception('''This client-version was banned by Audioscrobbler.
 Please contact the author of this module!''')
@@ -170,7 +170,7 @@ Please contact the author of this module!''')
 Consider using an NTP-client to keep you system time in sync.''')
             elif first.startswith('FAILED'):
                 self.handle_hard_error()
-                raise BackendError("Authencitation with AS failed. Reason: %s" %
+                raise self.BackendError("Authencitation with AS failed. Reason: %s" %
                                    lines[0])
             elif first == 'OK':
                 # wooooooohooooooo. We made it!
@@ -182,7 +182,7 @@ Consider using an NTP-client to keep you system time in sync.''')
                 # some hard error
                 self.handle_hard_error()
         else:
-            raise BackendError('Empty response')
+            raise self.BackendError('Empty response')
 
     def handle_hard_error(self):
         "Handles hard errors."
@@ -212,10 +212,10 @@ Consider using an NTP-client to keep you system time in sync.''')
         @return: True on success, False on failure"""
 
         if self.SESSION_ID is None:
-            raise AuthError("Please 'login()' first. (No session available)")
+            raise self.AuthError("Please 'login()' first. (No session available)")
 
         if self.POST_URL is None:
-            raise PostError("Unable to post data. Post URL was empty!")
+            raise self.PostError("Unable to post data. Post URL was empty!")
 
         if length != "" and type(length) != type(1):
             raise TypeError("length should be of type int")
@@ -292,11 +292,11 @@ Consider using an NTP-client to keep you system time in sync.''')
         rating = rating.upper()
 
         if source == 'L' and (rating == 'B' or rating == 'S'):
-            raise ProtocolError("""You can only use rating 'B' or 'S' on source 'L'.
+            raise self.ProtocolError("""You can only use rating 'B' or 'S' on source 'L'.
 See the docs!""")
 
         if source == 'P' and length == '':
-            raise ProtocolError("""Song length must be specified when using 'P' as
+            raise self.ProtocolError("""Song length must be specified when using 'P' as
 source!""")
 
         if type(time) != type(1):
