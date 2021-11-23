@@ -327,7 +327,7 @@ timestamp). Instead it was %s""" % time)
         @param inner_call: Internally used variable. Don't touch!"""
 
         if self.POST_URL is None:
-            raise ProtocolError('''Cannot submit without having a valid post-URL. Did
+            raise self.ProtocolError('''Cannot submit without having a valid post-URL. Did
 you login?''')
 
         values = {}
